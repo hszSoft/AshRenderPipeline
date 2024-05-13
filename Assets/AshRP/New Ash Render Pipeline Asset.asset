@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d3e32a7f32b361429e673c70e7e49a6, type: 3}
+  m_Name: New Ash Render Pipeline Asset
+  m_EditorClassIdentifier: 
+  diffuseIBL: {fileID: 8900000, guid: c4ed56cecbec2484fac308ae32f67d16, type: 3}
+  specularIBL: {fileID: 8900000, guid: 5c4d1b8afc78c2543b3352b93856a881, type: 3}
+  brdfLut: {fileID: 2800000, guid: 89252e11f7e138d4d8c66e868b8d5810, type: 3}
