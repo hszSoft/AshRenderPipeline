@@ -73,7 +73,7 @@ public class AshRenderPipeline : RenderPipeline
 
         // 清屏
         cmd.SetRenderTarget(gbufferID, gdepth);
-        cmd.ClearRenderTarget(true, true, Color.clear);
+        cmd.ClearRenderTarget(true, true, Color.grey);
         context.ExecuteCommandBuffer(cmd);
         cmd.Clear();
 

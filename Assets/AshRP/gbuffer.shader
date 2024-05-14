@@ -73,13 +73,16 @@ Shader "AshRP/GBuffer"
                 float4 vertex : POSITION;
                 float2 uv : TEXCOORD0;
                 float3 normal : NORMAL;
+                float4 tangent: TANGENT;
             };
 
             struct v2f
             {
                 float2 uv : TEXCOORD0;
                 float4 vertex : SV_POSITION;
-                float3 normal : NORMAL;
+                float3 worldNormal : TEXCOORD1;
+                float3 worldTangent : TEXCOORD2;
+                float3 worldBitangent : TEXCOORD3;
             };
 
             float4 _MainTex_ST;
@@ -100,7 +103,9 @@ Shader "AshRP/GBuffer"
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-                o.normal = UnityObjectToWorldNormal(v.normal);
+                o.worldNormal = UnityObjectToWorldNormal(v.normal);
+                o.worldTangent = UnityObjectToWorldDir(v.tangent.xyz);
+                o.worldBitangent = cross(o.worldNormal, o.worldTangent) * v.tangent.w;
                 return o;
             }
 
@@ -114,21 +119,24 @@ Shader "AshRP/GBuffer"
             {
                 float4 color = tex2D(_MainTex, i.uv);
                 float3 emission = tex2D(_EmissionMap, i.uv).rgb;
-                float3 normal = i.normal;
                 float metallic = _Metallic_global;
                 float roughness = _Roughness_global;
-                float ao = tex2D(_OcclusionMap, i.uv).g;
+                float ao = tex2D(_OcclusionMap, i.uv).r;
 
                 if(_Use_Metal_Map)
                 {
                     float4 metal = tex2D(_MetallicGlossMap, i.uv);
-                    metallic = metal.r;
-                    roughness = 1.0 - metal.a;
+                    metallic = metal.b;
+                    roughness = metal.g;
                 }
+                
+                float3 _normal = UnpackNormal(tex2D(_BumpMap, i.uv));
+                float3x3 TBN = float3x3(i.worldTangent, i.worldBitangent, i.worldNormal);
+                float3 normal = mul(_normal, TBN) * 0.5 + 0.5;
             
                 GT0 = color;
-                GT1 = float4(normal*0.5+0.5, 0);
-                GT2 = float4(0, 0, roughness,metallic);
+                GT1 = float4(normal, 0);
+                GT2 = float4(0, 0, roughness, metallic);
                 GT3 = float4(emission, ao);
             }
             ENDCG

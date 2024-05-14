@@ -92,6 +92,7 @@ Shader "AshRP/LightPass"
                     _diffuseIBL, _specularIBL, _brdfLut
                 );
 
+                color += direct;
                 color += ambient * occlusion;
                 color += emission;
 
